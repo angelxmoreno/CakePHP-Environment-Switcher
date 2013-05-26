@@ -17,3 +17,5 @@ Environment Switching class for CakePHP
 - Write tests?
 - Develop a fallback priority solution. Perhaps an array of environments, taking in the order as the preference of where to find files
 - Allow auto including of configuration file that defines the value of CAKE_CORE_INCLUDE_PATH
+- Consider distributing as a plugin
+- Create installation shells scripts
