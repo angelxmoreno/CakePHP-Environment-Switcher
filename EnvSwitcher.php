@@ -22,20 +22,37 @@
 class EnvSwitcher {
 
 	/**
-	 * the current APP_ENV valur
+	 * the current APP_ENV value
 	 * @var String
 	 */
 	protected static $_app_env;
 
 	/**
+	 * path to env dir
+	 * @var String
+	 */
+	protected static $_env_dir;
+
+	/**
+	 * fallback value for APP_ENV when not found
+	 * @var String
+	 */
+	protected static $_fallback_env = 'development';
+
+	/**
 	 * Gets the APP_ENV or triggers an error if known is defined
 	 */
-	protected static function _init() {
-		if (is_null(self::$_app_env)) {
+	public static function init($env_dir = null) {
+		if (is_null(self::$_app_env) && getenv('APP_ENV')) {
 			self::$_app_env = getenv('APP_ENV');
-			if (!self::$_app_env) {
-				trigger_error('The current Application Environment variable is not set', E_USER_ERROR);
-			}
+		} elseif (is_null(self::$_app_env) && !getenv('APP_ENV')) {
+			self::$_app_env = self::$_fallback_env;
+		}
+
+		if (!self::$_env_dir && $env_dir) {
+			self::$_env_dir = $env_dir;
+		} elseif (!self::$_env_dir && !$env_dir) {
+			self::$_env_dir = ROOT . DS . APP_DIR . DS . 'Config' . DS . 'envs' . DS;
 		}
 	}
 
@@ -45,7 +62,7 @@ class EnvSwitcher {
 	 * @return string The value of $_app_env
 	 */
 	public function getEnv() {
-		self::_init();
+		self::init();
 		return self::$_app_env;
 	}
 
@@ -69,7 +86,7 @@ class EnvSwitcher {
 	 * @return void
 	 */
 	public function includeFile($file) {
-		self::_init();
+		self::init();
 		$location = self::getFilePath($file);
 		$default = self::getFilePath($file, '_default');
 		if (is_file($location)) {
@@ -89,11 +106,11 @@ class EnvSwitcher {
 	 * @return String $path The path of the file using the $env value
 	 */
 	public function getFilePath($file, $env = null) {
-		self::_init();
+		self::init();
 		if (!$env) {
 			$env = self::$_app_env;
 		}
-		return ROOT . DS . APP_DIR . DS . 'Config' . DS . 'envs' . DS . $env . DS . $file;
+		return self::$_env_dir . $env . DS . $file;
 	}
 
 }
