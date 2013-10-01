@@ -40,20 +40,26 @@ class EnvSwitcher {
 	protected static $_fallback_env = 'development';
 
 	/**
-	 * Gets the APP_ENV or triggers an error if known is defined
+	 * Gets the APP_ENV or triggers an error if not defined
 	 */
-	public static function init($env_dir = null) {
-		if (is_null(self::$_app_env) && getenv('APP_ENV')) {
-			self::$_app_env = getenv('APP_ENV');
-		} elseif (is_null(self::$_app_env) && !getenv('APP_ENV')) {
-			self::$_app_env = self::$_fallback_env;
-		}
+	public static function init($app_env = null) {
+		if (is_null(self::$_app_env)){
+			//no app_env defined in the class, lets find one
 
-		if (!self::$_env_dir && $env_dir) {
-			self::$_env_dir = $env_dir;
-		} elseif (!self::$_env_dir && !$env_dir) {
-			self::$_env_dir = ROOT . DS . APP_DIR . DS . 'Config' . DS . 'envs' . DS;
+			//the getenv('APP_ENV')
+			if(getenv('APP_ENV')) {
+				self::$_app_env = getenv('APP_ENV');
+			}
+			//string passed
+			elseif (!is_null($app_env)) {
+				self::$_app_env = self::$_fallback_env;
+			}
+			//finally, just fallback to the default env
+			else {
+				self::$_app_env = self::$_fallback_env;
+			}
 		}
+		self::$_env_dir = ROOT . DS . APP_DIR . DS . 'Config' . DS . 'envs' . DS;
 	}
 
 	/**
@@ -90,11 +96,11 @@ class EnvSwitcher {
 		$location = self::getFilePath($file);
 		$default = self::getFilePath($file, '_default');
 		if (is_file($location)) {
-			include $location;
+			include_once $location;
 		} elseif (!is_file($default)) {
 			trigger_error('Trying to include the file "' . $file . '" but it is not found in "' . $location . '" or "' . $default . '".', E_USER_ERROR);
 		} else {
-			include $default;
+			include_once $default;
 		}
 	}
 
