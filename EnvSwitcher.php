@@ -79,7 +79,7 @@ class EnvSwitcher {
 	 * @param String $path The normal path of a file
 	 * @return void
 	 */
-	public function includeBaseFile($path) {
+	static public function includeBaseFile($path) {
 		$file = basename($path);
 		self::includeFile($file);
 	}
@@ -91,7 +91,7 @@ class EnvSwitcher {
 	 * @param String $file The file you want to include
 	 * @return void
 	 */
-	public function includeFile($file) {
+	static public function includeFile($file) {
 		self::init();
 		$location = self::getFilePath($file);
 		$default = self::getFilePath($file, '_default');
@@ -111,7 +111,7 @@ class EnvSwitcher {
 	 * @param String $env The environment used to generate the path, defaults to current value of APP_ENV
 	 * @return String $path The path of the file using the $env value
 	 */
-	public function getFilePath($file, $env = null) {
+	static public function getFilePath($file, $env = null) {
 		self::init();
 		if (!$env) {
 			$env = self::$_app_env;
