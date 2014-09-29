@@ -1,10 +1,10 @@
 {
-    "name": "angelxmoreno/CakePHP-Environment-Switcher",
+    "name": "angelxmoreno/cake-php-environment-switcher",
     "description": "Environment Switching class for CakePHP",
     "require": {
-        "php": ">=5.2.8",
+        "php": ">=5.2.8"
     },
     "config": {
         "vendor-dir": "Lib/EnvSwitcher"
-    },
+    }
 }
